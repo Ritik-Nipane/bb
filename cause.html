@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reasons Why I Love You 💖</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="cause.css"> </head>
+<body class="cause-body">
+
+    <div class="floating-hearts-container" id="heartContainer"></div>
+
+    <div class="music-control" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="glass-panel">
+        
+        <div class="love-meter-container">
+            <div class="love-label">Love Meter 💖</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <h1 class="page-title">Why You Are <span class="gold-text">Special</span></h1>
+        
+        <div id="reasons-container"></div>
+
+        <button class="cta-button shuffle-button">
+            Tell Me More... 🌸
+        </button>
+
+        <div class="ending-section" style="display: none;">
+            <div class="polaroid-frame">
+                <img src="./d1.jpeg" alt="Teddy Hug" class="ending-img">
+                <div class="caption">My Forever Home 🏠💖</div>
+            </div>
+            <h2 class="final-text">I Love You!</h2>
+        </div>
+
+    </div>
+
+    <script src="cause.js"></script>
+    
+    <script>
+        const music = document.getElementById('bgMusic');
+        const icon = document.getElementById('music-icon');
+        if(localStorage.getItem('musicPlaying') === 'true') {
+            music.play(); icon.textContent = '⏸️';
+            if(localStorage.getItem('musicTime')) music.currentTime = localStorage.getItem('musicTime');
+        }
+        function toggleMusic() {
+            if (music.paused) { music.play(); icon.textContent = '⏸️'; localStorage.setItem('musicPlaying', 'true'); } 
+            else { music.pause(); icon.textContent = '🎵'; localStorage.setItem('musicPlaying', 'false'); }
+        }
+        setInterval(() => { if(!music.paused) localStorage.setItem('musicTime', music.currentTime); }, 1000);
+    </script>
+</body>
+</html>

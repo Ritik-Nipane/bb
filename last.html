@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Beautiful Memories ✨</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* --- PREMIUM FINALE STYLES --- */
+        :root {
+            --primary: #d63384;
+            --gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+            min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            color: #555;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--primary);
+            text-shadow: 0 5px 15px rgba(214, 51, 132, 0.2);
+            margin-bottom: 10px;
+        }
+
+        p { font-size: 1.2rem; color: #777; }
+
+        /* --- MEMORY GRID --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .memory-card {
+            background: white;
+            padding: 15px 15px 50px 15px; /* Polaroid Style Padding */
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, z-index 0.3s;
+            cursor: pointer;
+            position: relative;
+            
+            /* IMPORTANT: Make sure they are visible by default */
+            opacity: 1; 
+            transform: translateY(0);
+        }
+
+        /* Slight Tints for realism */
+        .memory-card:nth-child(1) { transform: rotate(-3deg); }
+        .memory-card:nth-child(2) { transform: rotate(2deg); margin-top: 30px; }
+        .memory-card:nth-child(3) { transform: rotate(-2deg); }
+        
+        .memory-card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 100;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 350px; /* Fixed height to force images to show */
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+            border: 1px solid #eee;
+        }
+
+        .memory-date {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .memory-caption {
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* --- GIFT BOX --- */
+        .gift-section {
+            text-align: center;
+            margin-top: 80px;
+            height: 150px; /* Force space */
+        }
+
+        .gift-box-container {
+            width: 100px;
+            margin: 0 auto;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .gift-emoji { font-size: 5rem; }
+        .click-text { font-size: 1rem; color: var(--primary); margin-top: 10px; }
+
+        /* --- TICKET MODAL --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .golden-ticket {
+            background: linear-gradient(135deg, #fff 0%, #fffbf0 100%);
+            width: 90%; max-width: 450px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            text-align: center;
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        .ticket-event {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #d4af37;
+            margin: 10px 0;
+        }
+
+        /* Music Button */
+        .music-control {
+            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+            background: rgba(255,255,255,0.5); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1000; border: 1px solid white;
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* Mobile Fix */
+        @media (max-width: 768px) {
+            .gallery { grid-template-columns: 1fr; padding: 10px 30px; }
+            .memory-img { height: auto; max-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="music-control" onclick="toggleMusic()"><span id="music-icon">🎵</span></div>
+    <audio id="bgMusic" loop><source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg"></audio>
+
+    <div class="header">
+        <h1>Our Journey So Far...</h1>
+        <p>Every picture tells a story of "Us" ❤️</p>
+    </div>
+
+    <div class="gallery">
+        
+        <div class="memory-card">
+            <img src="./d1.jpeg" alt="Memory 1" class="memory-img">
+            <div class="memory-date">yourss smile babe you are veryyy veryy beautiful</div>
+            <div class="memory-caption">You’re you Moon my lovee.❤️</div>
+        </div>
+
+        <div class="memory-card">
+            <img src="./d2.jpeg" alt="Memory 2" class="memory-img">
+            <div class="memory-date">Together Vibes</div>
+            <div class="memory-caption">May your journey ahead be filled with happiness.😊💕</div>
+        </div>
+
+        <div class="memory-card">
+            <img src="./d3.jpeg" alt="Memory 3" class="memory-img">
+            <div class="memory-date">Pretty Soul</div>
+            <div class="memory-caption">Keep being the amazing person you are my lovee.🌸💖</div>
+        </div>
+
+    </div>
+
+    <div class="gift-section">
+        <div class="gift-box-container" id="giftBox">
+            <div class="gift-emoji">🎁</div>
+            <div class="click-text">Open Me!</div>
+        </div>
+    </div>
+
+    <div class="overlay" id="ticketModal">
+        <div class="golden-ticket">
+            <h3>OFFICIAL INVITATION</h3>
+            <h1 class="ticket-event">Date Night 🍷</h1>
+            <p>You are invited to a magical evening.</p>
+            <hr style="border: 0; border-top: 1px dashed #d4af37; margin: 15px 0;">
+            <p style="text-align: left; background: #fffdf0; padding: 10px; border-radius: 5px;">
+                <strong>📅 When:</strong> We both Decide<br>
+                <strong>📍 Where:</strong> Surprise Location<br>
+                <strong>👗 Wear:</strong> Something Beautiful
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- ANIMATIONS ---
+        window.addEventListener('load', () => {
+            // Animate Header
+            gsap.from('.header', { opacity: 0, y: -20, duration: 1 });
+            
+            // Animate Cards (From Invisible to Visible)
+            gsap.from('.memory-card', {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.3,
+                ease: "power2.out"
+            });
+
+            // Animate Gift Box
+            gsap.from('.gift-box-container', { scale: 0, duration: 1, delay: 1, ease: "elastic.out" });
+        });
+
+        // --- GIFT BOX LOGIC ---
+        const giftBox = document.getElementById('giftBox');
+        const modal = document.getElementById('ticketModal');
+
+        giftBox.addEventListener('click', () => {
+            gsap.to(giftBox, { scale: 1.2, duration: 0.1, yoyo: true, repeat: 3, onComplete: () => {
+                giftBox.style.display = 'none';
+                modal.style.display = 'flex';
+                
+                // Animate Ticket
+                gsap.to('.golden-ticket', { scale: 1, opacity: 1, duration: 1, ease: "elastic.out" });
+                
+                // Confetti
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            }});
+        });
+
+        // --- MUSIC LOGIC ---
+        const music = document.getElementById('bgMusic');
+        if(localStorage.getItem('musicPlaying') === 'true') {
+            music.play();
+            if(localStorage.getItem('musicTime')) music.currentTime = localStorage.getItem('musicTime');
+        }
+        function toggleMusic() {
+            if (music.paused) { music.play(); localStorage.setItem('musicPlaying', 'true'); } 
+            else { music.pause(); localStorage.setItem('musicPlaying', 'false'); }
+        }
+    </script>
+</body>
+</html>
